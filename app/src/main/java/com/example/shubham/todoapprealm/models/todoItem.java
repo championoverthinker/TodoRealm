@@ -11,6 +11,7 @@ import io.realm.RealmObject;
 public class todoItem extends RealmObject {
     String todoText;
     Date date;
+    String time;
 
     public todoItem(String todoText, Date date) {
         this.todoText = todoText;
@@ -19,6 +20,14 @@ public class todoItem extends RealmObject {
 
     public todoItem() {
         //empty
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public String getTodoText() {

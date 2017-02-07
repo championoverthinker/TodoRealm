@@ -2,6 +2,7 @@ package com.example.shubham.todoapprealm;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
@@ -10,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.TimePicker;
 
 import com.example.shubham.todoapprealm.models.todoItem;
 
@@ -25,6 +27,7 @@ import io.realm.Realm;
 public class AddDialogFragment extends DialogFragment{
     Realm realm;
     Date date;
+    String time;
 
     @NonNull
     @Override
@@ -55,6 +58,7 @@ public class AddDialogFragment extends DialogFragment{
                         todoItem item=realm.createObject(todoItem.class);
                         item.setTodoText(todo);
                         item.setDate(date);
+                        item.setTime(time);
                         dialog.dismiss();
 
                     }
@@ -67,6 +71,8 @@ public class AddDialogFragment extends DialogFragment{
         final int mYear = c.get(Calendar.YEAR);
         final int mMonth = c.get(Calendar.MONTH);
         final int mDay = c.get(Calendar.DAY_OF_MONTH);
+        final int hour=c.get(Calendar.HOUR_OF_DAY);
+        final int minute=c.get(Calendar.MINUTE);
         date=c.getTime();
         setDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,12 +93,24 @@ public class AddDialogFragment extends DialogFragment{
                 datePickerDialog.show();
             }
         });
-//        setDate.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
 //
-//            }
-//        });
+        time=hour+":"+minute;
+        Button setTime=(Button)v.findViewById(R.id.setTime);
+        setTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TimePickerDialog timePickerDialog=new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                        time=i+":"+i1;
+                    }
+                }, hour, minute,true);
+                timePickerDialog.show();
+            }
+
+        });
+
+
 
 
         return dialog;

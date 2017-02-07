@@ -16,6 +16,9 @@ import com.example.shubham.todoapprealm.models.todoItem;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
@@ -55,15 +58,22 @@ public class TodoAdapter extends RealmRecyclerViewAdapter<todoItem,TodoAdapter.T
             todoItem item=  getData().get(position);
         holder.todo.setText(item.getTodoText());
         if(item.getDate()!=null){
-        holder.time.setText(item.getDate().toString());}
+            SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy");
+            String date = format.format(item.getDate());
+        holder.date.setText(date);}
         else
-            holder.time.setText("");
+            holder.date.setText("");
+
+        if(item.getTime()!=null){
+            holder.time.setText(item.getTime());
+        }
     }
 
     public class TodoHolder extends RecyclerView.ViewHolder{
 
         @BindView(R.id.todo) TextView todo;
-        @BindView(R.id.timestamp)TextView time;
+        @BindView(R.id.date)TextView date;
+        @BindView(R.id.time)TextView time;
         public TodoHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);

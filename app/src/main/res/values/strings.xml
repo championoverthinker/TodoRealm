@@ -2,4 +2,5 @@
     <string name="app_name">TodoApp(realm)</string>
     <string name="submit">Submit</string>
     <string name="setDate">set date</string>
+    <string name="setTime">set time</string>
 </resources>
