@@ -31,9 +31,9 @@ public class AddDialogFragment extends DialogFragment{
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
         builder.setMessage("Enter new todo");
-        final View v= getActivity().getLayoutInflater().inflate(R.layout.dilaog_layout,null);
+        final View v= getActivity().getLayoutInflater().inflate(R.layout.dialog,null);
         builder.setView(v);
-        date=new Date(28,8,1997);
+
 
         realm=Realm.getDefaultInstance();
 
@@ -67,6 +67,7 @@ public class AddDialogFragment extends DialogFragment{
         final int mYear = c.get(Calendar.YEAR);
         final int mMonth = c.get(Calendar.MONTH);
         final int mDay = c.get(Calendar.DAY_OF_MONTH);
+        date=c.getTime();
         setDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

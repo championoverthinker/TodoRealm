@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements TodoAdapter.Liste
     void fabClicked(){
 //        AlertDialog.Builder builder=new AlertDialog.Builder(this);
 //        builder.setMessage("Enter new todo");
-//        final View v= getLayoutInflater().inflate(R.layout.dilaog_layout,null);
+//        final View v= getLayoutInflater().inflate(R.layout.dialog,null);
 //        builder.setView(v);
 //
 //
