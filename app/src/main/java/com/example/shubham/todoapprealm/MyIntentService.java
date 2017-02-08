@@ -8,22 +8,18 @@ import android.content.Intent;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
+
 /**
- * Created by shubham on 8/2/17.
+ * An {@link IntentService} subclass for handling asynchronous task requests in
+ * a service on a separate handler thread.
+ * <p>
+ * TODO: Customize class - update intent actions and extra parameters.
  */
+public class MyIntentService extends IntentService {
 
-public class AlarmService extends IntentService {
 
-    private NotificationManager alarmNotificationManager;
-
-    /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
-     * @param name Used to name the worker thread, important only for debugging.
-     */
-
-    public AlarmService(String name) {
-        super(name);
+    public MyIntentService() {
+        super("MyIntentService");
     }
 
     @Override
@@ -38,16 +34,20 @@ public class AlarmService extends IntentService {
 
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+                new Intent(this, MainActivity.class), 0);
 
         NotificationCompat.Builder alamNotificationBuilder = new NotificationCompat.Builder(this);
-        alamNotificationBuilder.setSmallIcon(android.R.drawable.ic_dialog_email).setContentText(msg).setContentIntent(contentIntent)
-        .setAutoCancel(true);
+        alamNotificationBuilder.setSmallIcon(android.R.drawable.ic_dialog_email).setContentText(msg).setContentIntent(contentIntent);
 
 
         NotificationManager manager=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(1,alamNotificationBuilder.build());
         Log.d("AlarmService", "Notification sent.");
     }
-}
 
+    /**
+     * Handle action Foo in the provided background thread with the provided
+     * parameters.
+     */
+
+}

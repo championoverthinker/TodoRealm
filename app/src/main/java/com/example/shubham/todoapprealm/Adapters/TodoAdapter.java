@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.shubham.todoapprealm.ItemTouchHelperClass;
 import com.example.shubham.todoapprealm.MainActivity;
 import com.example.shubham.todoapprealm.R;
 import com.example.shubham.todoapprealm.models.todoItem;
@@ -22,16 +23,30 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
+import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
+import io.realm.RealmResults;
 
 /**
  * Created by shubham on 7/2/17.
  */
 
-public class TodoAdapter extends RealmRecyclerViewAdapter<todoItem,TodoAdapter.TodoHolder> {
+public class TodoAdapter extends RealmRecyclerViewAdapter<todoItem,TodoAdapter.TodoHolder> implements ItemTouchHelperClass.TouchHelperListener {
     Context context;
     Listener listener;
 
+    @Override
+    public void onSwiped(final int pos) {
+        notifyItemRemoved(pos);
+        Realm realm=Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                getData().deleteFromRealm(pos);
+            }
+        });
+
+    }
 
 
     public interface Listener{

@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -27,7 +28,7 @@ import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class MainActivity extends AppCompatActivity implements TodoAdapter.Listener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity  {
     @BindView(R.id.todoList) RecyclerView recyclerView;
     TodoAdapter adapter;
     private Realm realm;
@@ -52,54 +53,8 @@ public class MainActivity extends AppCompatActivity implements TodoAdapter.Liste
 
     }
 
-//    @OnClick(R.id.addTodo)
+
     void fabClicked(){
-//        AlertDialog.Builder builder=new AlertDialog.Builder(this);
-//        builder.setMessage("Enter new todo");
-//        final View v= getLayoutInflater().inflate(R.layout.dialog,null);
-//        builder.setView(v);
-//
-//
-//        Button b=(Button)v.findViewById(R.id.submit);
-//
-//        final AlertDialog dialog=builder.create();
-//        b.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                realm.executeTransactionAsync(new Realm.Transaction() {
-//                    @Override
-//                    public void execute(Realm realm) {
-//
-//                        TextInputEditText newTodo=(TextInputEditText)v.findViewById(R.id.writeTodo);
-//                        String todo=newTodo.getText().toString();
-////                        if(todo!=null)
-////                        item.setTodoText("new task");
-//
-//                        todoItem item=realm.createObject(todoItem.class);
-//                        item.setTodoText(todo);
-//                        item.setDate(date);
-//                        dialog.dismiss();
-//
-//                    }
-//                });
-//            }
-//        });
-//
-//        Button setDate=(Button)v.findViewById(R.id.setDate);
-//        final Calendar c = Calendar.getInstance();
-//        int mYear = c.get(Calendar.YEAR);
-//        int mMonth = c.get(Calendar.MONTH);
-//        int mDay = c.get(Calendar.DAY_OF_MONTH);
-//        setDate.setOnClickListener(MainActivity.this);
-////        setDate.setOnClickListener(new View.OnClickListener() {
-////            @Override
-////            public void onClick(View view) {
-////
-////            }
-////        });
-//
-//
-//        dialog.show();
 
         DialogFragment addDialog=new AddDialogFragment();
         addDialog.show(getSupportFragmentManager(),"dialog");
@@ -119,25 +74,30 @@ public class MainActivity extends AppCompatActivity implements TodoAdapter.Liste
         LinearLayoutManager layoutManager=new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        adapter.setListener(this);
+        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
+        ItemTouchHelper.Callback callback = new ItemTouchHelperClass(adapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+
+
 
     }
 
-    @Override
-    public void LongClicked(final todoItem item) {
+//    @Override
+//    public void LongClicked(final todoItem item) {
+//
+//        realm.executeTransactionAsync(new Realm.Transaction() {
+//            @Override
+//            public void execute(Realm realm) {
+//                RealmResults<todoItem> realmResults=realm.where(todoItem.class).findAll();
+//                todoItem item1=realmResults.get(realmResults.indexOf(item));
+//                item1.deleteFromRealm();
+//            }
+//        });
+//    }
 
-        realm.executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                RealmResults<todoItem> realmResults=realm.where(todoItem.class).findAll();
-                todoItem item1=realmResults.get(realmResults.indexOf(item));
-                item1.deleteFromRealm();
-            }
-        });
-    }
-
-    @Override
-    public void onClick(View view) {
+//    @Override
+//    public void onClick(View view) {
 //        DatePickerDialog datePickerDialog=new DatePickerDialog(this);
 //        datePickerDialog.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
 //            @Override
@@ -165,5 +125,5 @@ public class MainActivity extends AppCompatActivity implements TodoAdapter.Liste
 //                    }
 //                }, 1997,28,8);
 //        datePickerDialog1.show();
-    }
+//    }
 }

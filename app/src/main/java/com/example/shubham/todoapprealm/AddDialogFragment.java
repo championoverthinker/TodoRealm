@@ -35,6 +35,7 @@ public class AddDialogFragment extends DialogFragment{
     Date date;
     String time;
     TextInputEditText newTodo;
+
     int calendarHour,calendarMinute,year,month,day;
 
     @NonNull
@@ -54,12 +55,13 @@ public class AddDialogFragment extends DialogFragment{
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final String todo=newTodo.getText().toString();
                 realm.executeTransactionAsync(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
 
 //                        TextInputEditText newTodo=(TextInputEditText)v.findViewById(R.id.writeTodo);
-                        String todo=newTodo.getText().toString();
+
 //                        if(todo!=null)
 //                        item.setTodoText("new task");
 
@@ -71,7 +73,7 @@ public class AddDialogFragment extends DialogFragment{
 
                     }
                 });
-                scheduleReminder();
+                scheduleReminder(todo);
                 dialog.dismiss();
             }
         });
@@ -136,11 +138,12 @@ public class AddDialogFragment extends DialogFragment{
         return dialog;
     }
 
-    private void scheduleReminder() {
+    private void scheduleReminder(String todo) {
         Intent i=new Intent(getActivity(),AlarmReceiver.class);
-        i.putExtra("Notif Message",newTodo.getText().toString());
+        i.putExtra("Notif Message",todo);
+//        Log.i("edittext",newTodo.getText().toString());
         AlarmManager am=(AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pi= PendingIntent.getBroadcast(getActivity(),0,i,0);
+        PendingIntent pi= PendingIntent.getBroadcast(getActivity(),0,i,PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar calendar=Calendar.getInstance();
 //        calendar.set(Calendar.YEAR,date.getYear());
 //        calendar.set(Calendar.MONTH,date.getMonth());
@@ -150,6 +153,7 @@ public class AddDialogFragment extends DialogFragment{
         calendar.set(Calendar.MONTH,month);
         calendar.set(Calendar.YEAR,year);
         calendar.set(Calendar.DAY_OF_MONTH,day);
-        am.set(AlarmManager.RTC,calendar.getTimeInMillis(),pi);
+        Log.i("date",month +""+year+""+day);
+        am.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pi);
     }
 }
