@@ -1,16 +1,22 @@
 package com.example.shubham.todoapprealm;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TimePicker;
 
 import com.example.shubham.todoapprealm.models.todoItem;
@@ -28,6 +34,8 @@ public class AddDialogFragment extends DialogFragment{
     Realm realm;
     Date date;
     String time;
+    TextInputEditText newTodo;
+    int calendarHour,calendarMinute,year,month,day;
 
     @NonNull
     @Override
@@ -36,7 +44,7 @@ public class AddDialogFragment extends DialogFragment{
         builder.setMessage("Enter new todo");
         final View v= getActivity().getLayoutInflater().inflate(R.layout.dialog,null);
         builder.setView(v);
-
+        newTodo=(TextInputEditText) v.findViewById(R.id.writeTodo);
 
         realm=Realm.getDefaultInstance();
 
@@ -50,7 +58,7 @@ public class AddDialogFragment extends DialogFragment{
                     @Override
                     public void execute(Realm realm) {
 
-                        TextInputEditText newTodo=(TextInputEditText)v.findViewById(R.id.writeTodo);
+//                        TextInputEditText newTodo=(TextInputEditText)v.findViewById(R.id.writeTodo);
                         String todo=newTodo.getText().toString();
 //                        if(todo!=null)
 //                        item.setTodoText("new task");
@@ -59,10 +67,12 @@ public class AddDialogFragment extends DialogFragment{
                         item.setTodoText(todo);
                         item.setDate(date);
                         item.setTime(time);
-                        dialog.dismiss();
+
 
                     }
                 });
+                scheduleReminder();
+                dialog.dismiss();
             }
         });
 
@@ -73,6 +83,9 @@ public class AddDialogFragment extends DialogFragment{
         final int mDay = c.get(Calendar.DAY_OF_MONTH);
         final int hour=c.get(Calendar.HOUR_OF_DAY);
         final int minute=c.get(Calendar.MINUTE);
+        year=c.get(Calendar.YEAR);
+        month=c.get(Calendar.MONTH);
+        day=c.get(Calendar.DAY_OF_MONTH);
         date=c.getTime();
         setDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +97,9 @@ public class AddDialogFragment extends DialogFragment{
                         cal.set(Calendar.YEAR,i);
                         cal.set(Calendar.MONTH,i1);
                         cal.set(Calendar.DAY_OF_MONTH,i2);
+                        year=i;
+                        month=i1;
+                        day=i2;
                         date =cal.getTime();
 
                     }
@@ -95,6 +111,8 @@ public class AddDialogFragment extends DialogFragment{
         });
 //
         time=hour+":"+minute;
+        calendarMinute=minute;
+        calendarHour=hour;
         Button setTime=(Button)v.findViewById(R.id.setTime);
         setTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,6 +121,8 @@ public class AddDialogFragment extends DialogFragment{
                     @Override
                     public void onTimeSet(TimePicker timePicker, int i, int i1) {
                         time=i+":"+i1;
+                        calendarHour=i;
+                        calendarMinute=i1;
                     }
                 }, hour, minute,true);
                 timePickerDialog.show();
@@ -114,5 +134,22 @@ public class AddDialogFragment extends DialogFragment{
 
 
         return dialog;
+    }
+
+    private void scheduleReminder() {
+        Intent i=new Intent(getActivity(),AlarmReceiver.class);
+        i.putExtra("Notif Message",newTodo.getText().toString());
+        AlarmManager am=(AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pi= PendingIntent.getBroadcast(getActivity(),0,i,0);
+        Calendar calendar=Calendar.getInstance();
+//        calendar.set(Calendar.YEAR,date.getYear());
+//        calendar.set(Calendar.MONTH,date.getMonth());
+//        calendar.set(Calendar.DAY_OF_MONTH,date.getDay());
+        calendar.set(Calendar.HOUR_OF_DAY,calendarHour);
+        calendar.set(Calendar.MINUTE,calendarMinute);
+        calendar.set(Calendar.MONTH,month);
+        calendar.set(Calendar.YEAR,year);
+        calendar.set(Calendar.DAY_OF_MONTH,day);
+        am.set(AlarmManager.RTC,calendar.getTimeInMillis(),pi);
     }
 }
